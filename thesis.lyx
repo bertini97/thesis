@@ -1,0 +1,1092 @@
+#LyX 2.4 created this file. For more info see https://www.lyx.org/
+\lyxformat 620
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass sapthesis
+\begin_preamble
+\renewcommand{\copyright}{\textcopyright}
+
+\IDnumber{1755287}
+\course{Laurea Magistrale in Fisica}
+\courseorganizer{Facoltà di Scienze Matematiche, Fisiche e Naturali}
+\submitdate{September 2024}
+\copyyear{2024 Lorenzo Bertini}
+\authoremail{bertini@1755287@studenti.uniroma1.it}
+\advisor{Prof. Maurizio Mattia}
+\end_preamble
+\use_default_options true
+\maintain_unincluded_children no
+\language english
+\language_package default
+\inputencoding utf8
+\fontencoding auto
+\font_roman "times" "default"
+\font_sans "helvet" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_roman_osf false
+\font_sans_osf false
+\font_typewriter_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\float_placement class
+\float_alignment class
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\use_formatted_ref 0
+\use_minted 0
+\use_lineno 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tablestyle default
+\tracking_changes false
+\output_changes false
+\change_bars false
+\postpone_fragile_content true
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\docbook_table_output 0
+\docbook_mathml_prefix 1
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Recurrent neural networks as replicas of physical and biological stochastic systems
+\end_layout
+
+\begin_layout Author
+Lorenzo Bertini
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset toc
+LatexCommand tableofcontents
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Chapter
+Reservoir computing framework
+\end_layout
+
+\begin_layout Section
+Recurrent neural networks
+\end_layout
+
+\begin_layout Subsection
+General concepts
+\end_layout
+
+\begin_layout Standard
+In machine learning,
+ a neural network (NN) is a model designed in analogy to the neuronal organization of biological neural networks,
+ or brains.
+ An artificial NN is made of units called 
+\emph on
+neurons
+\emph default
+,
+ which approximately model neurons in a brain.
+ The neurons in the graph are connected to each other by edges that model synaptic connections.
+\end_layout
+
+\begin_layout Standard
+Each neuron carries a signal 
+\begin_inset Formula $r_{i}(t)$
+\end_inset
+
+,
+ usually a real and limited number,
+ that is the result of a applying some non-linear function of the sum of its inputs.
+ This sum is called 
+\emph on
+activation
+\emph default
+,
+ and the function is called 
+\emph on
+activation function
+\emph default
+.
+ Each input is weighted by a synaptic strength:
+ these can be mapped into a connectivity matrix 
+\begin_inset Formula $\mathbf{W}\in\mathbb{R}^{N\times N}$
+\end_inset
+
+ for the network,
+ where 
+\begin_inset Formula $N$
+\end_inset
+
+ is the number of neurons.
+ Each element 
+\begin_inset Formula $W_{ij}$
+\end_inset
+
+ represents the strength of the input received by neuron 
+\begin_inset Formula $j$
+\end_inset
+
+ from neuron 
+\begin_inset Formula $i$
+\end_inset
+
+.
+ The internal state of the network is represented by the vector 
+\begin_inset Formula $\mathbf{r}(t)=\{r_{1}(t),\cdots,r_{N}(t)\}\in\mathbb{R}^{N}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsection
+Recurrent neural networks (RNNs)
+\end_layout
+
+\begin_layout Standard
+In contrast to the uni-directional 
+\emph on
+feedforward neural networks
+\emph default
+,
+ where the flow of the signal is uni-directional,
+ in 
+\emph on
+recurrent neural networks
+\emph default
+ (RNNs) the flow is bi-directional,
+ meaning that the output of some node can affect subsequent input to the same node.
+ This means that their topology can have cycles
+\begin_inset CommandInset citation
+LatexCommand cite
+key "lukosevicius-jaeger"
+literal "true"
+
+\end_inset
+
+,
+ and this allows them to:
+\end_layout
+
+\begin_layout Enumerate
+Possibly develop a self-sustained temporal activation dynamics,
+ even without a driving input signal.
+ This makes RNNs 
+\emph on
+dynamical systems
+\emph default
+,
+ while FNNs are functions.
+\end_layout
+
+\begin_layout Enumerate
+While driven by an input signal,
+ preserve a nonlinear transformation of the input history in it's internal state 
+\begin_inset Formula $\mathbf{r}(t)$
+\end_inset
+
+.
+ This means that RNNs have 
+\emph on
+dynamical memory
+\emph default
+.
+\end_layout
+
+\begin_layout Subsection
+Neuron types
+\end_layout
+
+\begin_layout Standard
+There are two kinds of neurons used in RNNs
+\begin_inset CommandInset citation
+LatexCommand cite
+key "cucchi"
+literal "true"
+
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Description
+Artificial
+\begin_inset space ~
+\end_inset
+
+neurons The spiking activity of 
+\emph on
+artificial neurons
+\emph default
+ is obtained averaging the number of spikes per time interval,
+ resulting in a rate-based activity.
+ Here,
+ a neuron state 
+\begin_inset Formula $r(t)$
+\end_inset
+
+ represents its average firing rate,
+ and its evolution is described by discrete-time differential equations,
+ in the form 
+\begin_inset Formula $r_{n+1}=f(r_{n})$
+\end_inset
+
+.
+ At each time step,
+ the input of a neuron is the sum of every other neuron activation at the previous time step,
+ weighted by the strength matrix.
+ The new activation for the neuron is given by a non-linear activation function 
+\begin_inset Formula $f$
+\end_inset
+
+ of this input
+\begin_inset Formula 
+\begin{align}
+r_{i}(t) & =f\left(\sum_{j}W_{ij}r_{j}(t-1)\right)\quad\forall i & \mathbf{r}(t+1) & =f\left(\mathbf{W}\mathbf{r}(t)\right)\label{eq:artificialneurons}
+\end{align}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Description
+Spiking
+\begin_inset space ~
+\end_inset
+
+neurons The activity of 
+\emph on
+spiking neurons
+\emph default
+,
+ usually seen in computational neuroscience,
+ is modelled with individual spikes rather than averages,
+ and they are described by continuous-time differential equations,
+ in the form 
+\begin_inset Formula $\dot{r}=f(r)$
+\end_inset
+
+.
+ Here,
+ the neuron state 
+\begin_inset Formula $r(t)$
+\end_inset
+
+ represents the membrane potential.
+ Using the aforementioned form for the evolution equation,
+ one can see that corresponds to the equation for 
+\emph on
+integrate-and-fire
+\emph default
+ (IR) neuron models,
+ where the current (the activation function) could be a function of the weighted sum of spikes from neighboring neurons
+\begin_inset Formula 
+\begin{align}
+\frac{dr_{i}(t)}{dt} & =I\left(\sum_{j}W_{ij}r_{j}(t)\right)\quad\forall i & \frac{d\mathbf{r}(t)}{dt} & =I\left(\mathbf{W}\mathbf{r}(t)\right)\label{eq:spikingneurons}
+\end{align}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+RNN dynamics
+\end_layout
+
+\begin_layout Standard
+RNNs carry out tasks by processing an input signal 
+\begin_inset Formula $\mathbf{u}(t)=\{u_{1}(t),\cdots,u_{N_{u}}(t)\}\in\mathbb{R}^{N_{u}}$
+\end_inset
+
+ (where 
+\begin_inset Formula $t$
+\end_inset
+
+ is not necessarily time),
+ which gets mapped into the network state by an input matrix 
+\begin_inset Formula $\mathbf{W}_{i}\in\mathbb{R}^{N_{u}\times N}$
+\end_inset
+
+.
+ In the evolution equation,
+ an additional term 
+\begin_inset Formula $h(\mathbf{W}_{i}\mathbf{u}(t))$
+\end_inset
+
+ gets added to 
+\begin_inset Formula $\mathbf{W}\mathbf{r}(t)$
+\end_inset
+
+,
+ where 
+\begin_inset Formula $h(\cdot)$
+\end_inset
+
+ is a linear function.
+\end_layout
+
+\begin_layout Standard
+The output of a network is a signal 
+\begin_inset Formula $\mathbf{y}(t)=\{y_{1}(t),\cdots,y_{N_{y}}(t)\}\in\mathbb{R}^{N_{y}}$
+\end_inset
+
+,
+ which gets extracted from the network with an output matrix 
+\begin_inset Formula $\mathbf{W}_{o}\in\mathbb{R}^{N\times N_{y}}$
+\end_inset
+
+ and a linear function 
+\begin_inset Formula $g(\cdot)$
+\end_inset
+
+:
+ 
+\begin_inset Formula $\mathbf{y}(t)=g(\mathbf{W}_{o}\mathbf{r}(t))$
+\end_inset
+
+.
+ The linear functions 
+\begin_inset Formula $h,g$
+\end_inset
+
+ are usually the identity,
+ and will often be omitted.
+ The equation for the internal dynamics of a RNN in the discrete case is then
+\begin_inset Formula 
+\begin{align}
+\mathbf{r}(t) & =f\left(\mathbf{W}_{i}\mathbf{u}(t)+\mathbf{W}\mathbf{r}(t-1)\right)\label{eq:rcupdate}\\
+\mathbf{y}(t) & =g\left(\mathbf{W}_{o}\mathbf{r}(t)\right)\label{eq:rcoutput}
+\end{align}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The input and the output signals are often called 
+\emph on
+input
+\emph default
+ and 
+\emph on
+output
+\emph default
+ (or 
+\emph on
+readout
+\emph default
+) 
+\emph on
+layers
+\emph default
+.
+ The network is then called 
+\emph on
+hidden layer
+\emph default
+,
+ because it acts as a black box:
+ the internal representation 
+\begin_inset Formula $\mathbf{r}(t)$
+\end_inset
+
+ is not directly needed.
+ Typically,
+ 
+\begin_inset Formula $N\gg N_{u},N_{y}$
+\end_inset
+
+:
+ the hidden layer internal space is dimensionally bigger than both the output and the input layers.
+\end_layout
+
+\begin_layout Subsection
+RNN training
+\end_layout
+
+\begin_layout Standard
+Given an input signal 
+\begin_inset Formula $\mathbf{u}(t)$
+\end_inset
+
+,
+ the output signal 
+\begin_inset Formula $\mathbf{y}(t)$
+\end_inset
+
+ produced by the network with such input,
+ and a target output signal 
+\begin_inset Formula $\mathbf{y}_{\text{targ}}(t)$
+\end_inset
+
+,
+ training the network means tuning its weights such that a chosen error function 
+\begin_inset Formula $E(\mathbf{Y},\mathbf{Y}_{\text{targ}})$
+\end_inset
+
+ between the output and the target is minimized.
+ This error can be for example the normalized root mean square (RMS):
+\begin_inset Formula 
+\[
+E(\mathbf{Y},\mathbf{Y}_{\text{targ}})=\sqrt{\frac{\left\langle \left|\mathbf{y}(t)-\mathbf{y}_{\text{targ}}(t)\right|^{2}\right\rangle _{t}}{\left\langle \left|\mathbf{y}_{\text{targ}}(t)-\left\langle \mathbf{y}_{\text{targ}}(t)\right\rangle _{t}\right|^{2}\right\rangle _{t}}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Leaky dynamics
+\end_layout
+
+\begin_layout Standard
+The neuron models in 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:artificialneurons"
+plural "false"
+caps "false"
+noprefix "false"
+nolink "false"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:spikingneurons"
+plural "false"
+caps "false"
+noprefix "false"
+nolink "false"
+
+\end_inset
+
+ have no memory 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "jaeger"
+literal "true"
+
+\end_inset
+
+:
+ their state 
+\begin_inset Formula $r(t)$
+\end_inset
+
+ depends fractionally and indirectly from the state at the previous step.
+ These networks are good for modeling discrete-time systems with jumps.
+ For slow and continuous systems,
+ it is better to use networks with a continous dynamics.
+ For spiking neurons one model is the 
+\emph on
+leaky integrate-and-fire
+\emph default
+ (LIF).
+ This introduces a global time constant 
+\begin_inset Formula $\gamma=1/\tau$
+\end_inset
+
+ and a uniform leaking rate 
+\begin_inset Formula $\alpha$
+\end_inset
+
+
+\begin_inset Foot
+status collapsed
+
+\begin_layout Plain Layout
+The equation for the membrane potential for leaky integrate-and-fire neurons is
+\begin_inset Formula 
+\[
+C_{m}\frac{dV_{m}}{dt}=I(t)-\frac{V_{m}(t)}{R_{m}}
+\]
+
+\end_inset
+
+where a current 
+\begin_inset Formula $-V_{m}/R_{m}$
+\end_inset
+
+ is added to model the membrane not being a perfect insulator.
+ The perfect insulator limit is recovered for 
+\begin_inset Formula $R_{m}\to\infty$
+\end_inset
+
+.
+ The parameters are 
+\begin_inset Formula $\gamma=1/C_{m}$
+\end_inset
+
+,
+ the reciprocal capacitance,
+ and 
+\begin_inset Formula $\alpha=1/R_{m}$
+\end_inset
+
+,
+ the conductance.
+\end_layout
+
+\end_inset
+
+:
+\begin_inset Formula 
+\begin{equation}
+\frac{1}{\gamma}\frac{d\mathbf{r}}{dt}=-\alpha\mathbf{y}(t)+I\left(\mathbf{W}\mathbf{y}(t)+\cdots\right)\label{eq:leakycontinous}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The dicrete dynamics for their rate-based counterparts can be obtained integrating equation 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:leakycontinous"
+plural "false"
+caps "false"
+noprefix "false"
+nolink "false"
+
+\end_inset
+
+ with a method of choice.
+ The Euler method is the most commonly used,
+ and yields the following:
+\begin_inset Formula 
+\begin{equation}
+\mathbf{r}(t+1)=(1-\alpha\gamma)\mathbf{r}(t)+\gamma f\left(\mathbf{W}\mathbf{r}(t)+\cdots\right)\label{eq:leakydiscrete}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Another popular design is to set 
+\begin_inset Formula $\alpha=1$
+\end_inset
+
+ and redefine 
+\begin_inset Formula $\gamma=\alpha$
+\end_inset
+
+ as the leaking rate,
+ yielding
+\begin_inset Formula 
+\begin{equation}
+\mathbf{r}(t+1)=(1-\alpha)\mathbf{r}(t)+\alpha f\left(\mathbf{W}\mathbf{r}(t)+\cdots\right)\label{eq:leakydiscretecommon}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Feedback layer and input bias
+\end_layout
+
+\begin_layout Standard
+Some models extend the dynamics including a feedback from the output of the reservoir at the previous time step,
+ through a feedback layer 
+\begin_inset Formula $\mathbf{W}_{\mathrm{f}}\in\mathbb{R}^{N_{y}\times N}$
+\end_inset
+
+.
+ Moreover,
+ a constant input bias 
+\begin_inset Formula $b_{i}$
+\end_inset
+
+ can be added to each neuron input.
+ The equation then becomes
+\begin_inset Formula 
+\[
+\mathbf{r}(t)=f\left(\mathbf{W}_{i}\mathbf{u}(t)+\mathbf{W}\mathbf{r}(t-1)+\mathbf{W}_{f}\mathbf{y}(t-1)+\mathbf{b}\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Reservoir computing
+\end_layout
+
+\begin_layout Standard
+Training RNNs traditionally involves tuning all the connections 
+\begin_inset Formula $\mathbf{W}_{i},\mathbf{W},\mathbf{W}_{o}$
+\end_inset
+
+ by gradient-descent methods.
+ This is inherently difficult to get right and computationally expensive
+\begin_inset Marginal
+status open
+
+\begin_layout Plain Layout
+Correct and add stuff
+\end_layout
+
+\end_inset
+
+.
+ The 
+\emph on
+reservoir computing
+\emph default
+ framework was born trying to avoid the shortcomings of gradient-descent methods.
+\end_layout
+
+\begin_layout Standard
+It operates a conceptual and computational separation between the recurrent network,
+ and the often linear readout that produces the output.
+ In this technique,
+ the RNN is a passive nonlinear temporal expansion function,
+ called 
+\emph on
+reservoir
+\emph default
+ (hence the name) and does not get trained:
+ it gets passively driven by an input signal,
+ and maintains in its internal state a nonlinear transformation of the input history.
+ Only the readout layer,
+ that maps the internal state on the output vector,
+ is obtained from training.
+\begin_inset Marginal
+status open
+
+\begin_layout Plain Layout
+Tell about general reservoir advantages
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Echo state networks
+\end_layout
+
+\begin_layout Standard
+Given the reservoir computing framework,
+ the reservoir evolution dynamics,
+ the problem is what property should the RNN posses to make a good reservoir.
+\end_layout
+
+\begin_layout Standard
+Consider an input 
+\begin_inset Formula $\mathbf{u}(t)\in U^{J},t\in J$
+\end_inset
+
+ ,
+ an input sequence 
+\begin_inset Formula $\mathbf{u}^{h}=\cdots,\mathbf{u}(h-1),\mathbf{u}(h)$
+\end_inset
+
+ of 
+\begin_inset Formula $h$
+\end_inset
+
+ steps,
+ and a RNN with an evolution operator 
+\begin_inset Formula $T$
+\end_inset
+
+ such that 
+\begin_inset Formula $\mathbf{r}(t+h)=T(\mathbf{r}(t),\mathbf{u}^{h})$
+\end_inset
+
+.
+ Assume that 
+\begin_inset Formula $U$
+\end_inset
+
+ and 
+\begin_inset Formula $A$
+\end_inset
+
+ are compact.
+ The network is said to have 
+\emph on
+echo states
+\emph default
+ if the network state 
+\begin_inset Formula $\mathbf{r}(t)$
+\end_inset
+
+ is uniquely determined by any left-infinite input sequence 
+\begin_inset Formula $\mathbf{u}^{-\infty}$
+\end_inset
+
+.
+ In other words,
+ for every input sequence,
+ if the network has echo states,
+ there is only one possible final state 
+\begin_inset Formula $\mathbf{r}(t)$
+\end_inset
+
+.
+ The property of having echo states is called 
+\emph on
+echo state property
+\emph default
+,
+ and a network with this property is called 
+\emph on
+echo state network
+\emph default
+ (ESN).
+\end_layout
+
+\begin_layout Standard
+An equivalent formulation of this property would be to say that there exists an input echo function 
+\begin_inset Formula $E(\cdot)$
+\end_inset
+
+ such that for all left infinite input histories 
+\begin_inset Formula $\cdots,\mathbf{u}(t-1),\mathbf{u}(t)$
+\end_inset
+
+,
+ the current network state is
+\begin_inset Formula 
+\[
+\mathbf{r}(t)=E\left(\cdots,\mathbf{u}(t-1),\mathbf{u}(t)\right)
+\]
+
+\end_inset
+
+This means that the internal state can be understood as an 
+\begin_inset Quotes eld
+\end_inset
+
+echo
+\begin_inset Quotes erd
+\end_inset
+
+ of the input history (hence the name).
+\end_layout
+
+\begin_layout Standard
+It can be proved
+\begin_inset CommandInset citation
+LatexCommand cite
+key "jaeger"
+literal "true"
+
+\end_inset
+
+ that in a network with this property the internal state asymptotically depends only on the driving input signal:
+ the dependency on the initial condition is progressively lost.
+ Having a fading memory gives ESNs some features:
+\begin_inset Marginal
+status open
+
+\begin_layout Plain Layout
+Some sources are needed for this
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+They becomes robust to variation or inaccuracies in the initial state.
+\end_layout
+
+\begin_layout Enumerate
+They can focus on capturing the temporal dependencies within the input data without being 
+\begin_inset Quotes eld
+\end_inset
+
+distracted
+\begin_inset Quotes erd
+\end_inset
+
+ by the initial state.
+\end_layout
+
+\begin_layout Enumerate
+??
+\end_layout
+
+\begin_layout Standard
+One of the proposed implementation of a reservoir computing model with a discrete dynamics makes use of an echo state network as a reservoir,
+ and it's usually also called echo state network (ESN).
+\end_layout
+
+\begin_layout Subsection
+Training
+\end_layout
+
+\begin_layout Standard
+As already noted,
+ the key point of reservoir computing is to tune only the readout layer.
+ This is a common supervised non-temporal task of mapping an input to a desired output.
+ Given an input signal 
+\begin_inset Formula $\mathbf{u}(t)$
+\end_inset
+
+ and a corresponding desired output 
+\begin_inset Formula $\mathbf{y}(t)$
+\end_inset
+
+,
+ the input is used to 
+\begin_inset Quotes eld
+\end_inset
+
+drive
+\begin_inset Quotes erd
+\end_inset
+
+ the reservoir according to equation 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:rcupdate"
+plural "false"
+caps "false"
+noprefix "false"
+nolink "false"
+
+\end_inset
+
+,
+ producing 
+\series bold
+
+\begin_inset Formula $\mathbf{r}(t)$
+\end_inset
+
+
+\series default
+.
+ The trained output layer 
+\begin_inset Formula $\mathbf{W}_{o}$
+\end_inset
+
+ should then satisfy this system of linear equations
+\begin_inset Formula 
+\[
+\mathbf{W}_{o}\mathbf{r}(t)=\mathbf{y}(t)\quad\forall t
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The time series 
+\begin_inset Formula $\mathbf{u}(t)$
+\end_inset
+
+,
+ 
+\begin_inset Formula $\mathbf{r}(t)$
+\end_inset
+
+ and 
+\begin_inset Formula $\mathbf{y}(t)$
+\end_inset
+
+ can be arranged into matrices (one dimension being time) with 
+\begin_inset Formula $\mathbf{U}\equiv[\mathbf{u}(1),\dots,\mathbf{u}(T)]\in\mathbb{R}^{N_{u}\times T}$
+\end_inset
+
+,
+ 
+\begin_inset Formula $\mathbf{R}\in\mathbb{R}^{N\times T}$
+\end_inset
+
+ and 
+\begin_inset Formula $\mathbf{Y}\in\mathbb{R}^{N_{y}\times T}$
+\end_inset
+
+ respectively.
+ With this notation,
+ the problem becomes finding 
+\begin_inset Formula $\mathbf{W}_{o}$
+\end_inset
+
+ as a solution of the linear system 
+\begin_inset Formula $\mathbf{W}_{o}\mathbf{R}=\mathbf{Y}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Finding solutions to an overdetermined system of linear equations is a common problem called 
+\emph on
+linear regression
+\emph default
+.
+ The normal equation formulation of the problem would be 
+\begin_inset Formula $\mathbf{W}_{o}\mathbf{X}\mathbf{X}^{T}=\mathbf{Y}\mathbf{X}^{T}$
+\end_inset
+
+.
+ The standard approach is ordinary least squares regression:
+ this procedure minimizes the euclidean norm 
+\begin_inset Formula $\lVert\mathbf{W}_{o}\mathbf{R}-\mathbf{Y}\rVert^{2}$
+\end_inset
+
+,
+ which is indeed the loss function.
+ Then,
+\end_layout
+
+\begin_layout Standard
+Tikhonov regularization
+\begin_inset Formula 
+\[
+\mathbf{W}_{o}=\mathbf{Y}^{T}\mathbf{X}^{T}(\mathbf{X}\mathbf{X}^{T}+\beta\mathbf{I})^{-1}
+\]
+
+\end_inset
+
+where 
+\begin_inset Formula $\mathbf{I}$
+\end_inset
+
+ is the identity matrix and 
+\begin_inset Formula $\beta$
+\end_inset
+
+ is a regularization coefficient.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "jaeger"
+literal "false"
+
+\end_inset
+
+Herbert Jaeger,
+ The “echo state” approach to analysing and training recurrent neural networks – with an Erratum note
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "lukosevicius-jaeger"
+literal "false"
+
+\end_inset
+
+Mantas Lukoševičius,
+ Herbert Jaeger,
+ Reservoir computing approaches to recurrent neural network training,
+ Computer Science Review 3 (2009) 127–149
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "cucchi"
+literal "false"
+
+\end_inset
+
+Matteo Cucchi et al,
+ Hands-on reservoir computing:
+ a tutorial for practical implementation
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "nakajima-fischer"
+literal "false"
+
+\end_inset
+
+Kohei Nakajima Ingo Fischer,
+ Reservoir Computing:
+ Theory,
+ Physical Implementations,
+ and Applications
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "lukosevicius"
+literal "false"
+
+\end_inset
+
+Mantas Lukoševičius,
+ A Practical Guide to Applying Echo State Networks
+\end_layout
+
+\end_body
+\end_document
